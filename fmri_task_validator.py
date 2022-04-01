@@ -5,19 +5,20 @@ import os
 import argparse
 
 def get_argument():
-    arg_parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="",
-        epilog="""    Validate content of fmri_task directories (task files not actual fMRI)
+        epilog="""    Validate the content of fmri_task directories (task files not actual fMRI)
+    Make sure that fmri_task directories are unziped beforehand.
         """)
 
-    arg_parser.add_argument("filesToCheck", help="Directory with fmri_task files.")
+    parser.add_argument("filesToCheck", help="Directory with fmri_task files (i.e. 1234567_fmri_task/)")
 
-    return arg_parser
+    return parser
     
 #get fileS to check from arguments
-arg_parser = get_argument()
-args   = arg_parser.parse_args()
+parser = get_argument()
+args   = parser.parse_args()
 directory_content = os.listdir(args.filesToCheck)
 
 #print all files in directory 
