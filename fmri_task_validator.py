@@ -29,7 +29,8 @@ print('\n',args.filesToCheck,)
     #print(' '.ljust(4),val)
 
 #remove files to ignore from directory_content
-filesToIgnore = ['README.txt']
+filesToIgnore = ['README.txt',
+                 '*.pdf']
 for file in filesToIgnore:
     if file in directory_content:
         directory_content.remove(file)
