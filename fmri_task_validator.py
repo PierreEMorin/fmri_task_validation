@@ -8,41 +8,42 @@ def get_argument():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="",
-        epilog="""    Validate the content of fmri_task directories (task files not actual fMRI)
+        epilog="""    Validate the content of fmri_task directories (e-prime files not actual fMRI)
     Make sure that fmri_task directories are unziped beforehand.
         """)
-
-    parser.add_argument("filesToCheck", help="Directory with fmri_task files (i.e. 1234567_fmri_task/)")
-
+    parser.add_argument("filesToCheck", help="Directory with fmri_task files (i.e. 1234567_v01_IRMF_task/)")
+    parser.add_argument("mode", help="Select between 'short' or 'long' form report")
     return parser
     
-#get fileS to check from arguments
+#get files to check from arguments
 parser = get_argument()
 args   = parser.parse_args()
 directory_content = os.listdir(args.filesToCheck)
 
 #print all files in directory 
-#print('\nValidating content of:', args.filesToCheck,)
-print('\n',args.filesToCheck,)
-#print('\n',args.filesToCheck,)
-#for val in directory_content:
-    #print(' '.ljust(4),val)
-
+if(args.mode=='long'):
+    print('\nValidating content of::', args.filesToCheck,)
+    for val in directory_content:
+        print(' '.ljust(4),val)
+else:
+    print('\n',args.filesToCheck,)
+    
 #remove files to ignore from directory_content
-filesToIgnore = ['README.txt',
-                 '*.pdf']
+filesToIgnore = ['README.txt']
 for file in filesToIgnore:
     if file in directory_content:
         directory_content.remove(file)
-        
-#check if all files have the proper id
+   
+#check if all files have the proper id (pscid)
 pscid = args.filesToCheck[0:7]
 fileIDErrorCount = 0
-#print(' '.ljust(4),'Validating participant ID')
+if(args.mode=='long'):
+    print('\n',' '.ljust(4),'Validating participant ID')
 for file in directory_content:
     if pscid not in file:
         fileIDErrorCount += 1
-        #print(' '.ljust(8),file,' Error: Wrong ID!')
+        if(args.mode=='long'):
+            print(' '.ljust(8),file,' Error: Wrong ID!')
         directory_content.remove(file)
 
 #check for extra number at the begining or end of the PSCID
@@ -53,12 +54,14 @@ for extra in salt:
     for file in directory_content:
         if pscidx in file:
             fileIDErrorCount += 1
-            #print(' '.ljust(8),file,' Error: Wrong ID!', pscidx)
+            if(args.mode=='long'):
+                print(' '.ljust(8),file,' Error: Wrong ID!', pscidx)
             directory_content.remove(file)
     for file in directory_content:
         if xpscid in file:
             fileIDErrorCount += 1
-            #print(' '.ljust(8),file,' Error: Wrong ID!', xpscid)
+            if(args.mode=='long'):
+                print(' '.ljust(8),file,' Error: Wrong ID!', xpscid)
             directory_content.remove(file)
 
 if fileIDErrorCount == 0:
@@ -67,7 +70,8 @@ else:
     print(' '.ljust(8),'Error: Wrong ID!')
 
 #check if all necessary files are present
-#print(' '.ljust(4),'Validating content')
+if(args.mode=='long'):
+    print(' '.ljust(4),'Validating content')
 content = {"Onset-Event-Encoding": 0,
            "Output-Responses-Encoding": 0,
            "Output_Retrieval": 0}
